@@ -1,0 +1,74 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+# Directory and file locations.
+dir               = /certificates/intermediate
+certs             = $dir/certs
+crl_dir           = $dir/crl
+new_certs_dir     = $dir/newcerts
+database          = $dir/index.txt
+serial            = $dir/serial
+RANDFILE          = $dir/private/.rand
+default_md        = sha256
+policy            = policy_loose
+default_days      = 375
+preserve          = no
+
+# The root key and root certificate.
+private_key       = $dir/private/intermediate.key.pem
+certificate       = $dir/certs/intermediate.cert.pem
+
+# For certificate revocation lists.
+crlnumber         = $dir/crlnumber
+crl               = $dir/crl/intermediate.crl.pem
+crl_extensions    = crl_ext
+default_crl_days  = 30
+
+[ req ]
+default_bits        = 2048
+prompt              = no
+distinguished_name  = req_distinguished_name
+string_mask         = utf8only
+
+[ policy_loose ]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[ req_distinguished_name ]
+countryName             = 
+stateOrProvinceName     = 
+0.organizationName      = organization
+organizationalUnitName  = organizationUnit
+commonName				= server
+emailAddress            = 
+
+[ server_cert ]
+# Extensions for server certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+
+
+[ crl_ext ]
+# Extension for CRLs (`man x509v3_config`).
+authorityKeyIdentifier=keyid:always
+
+[ ocsp ]
+# Extension for OCSP signing certificates (`man ocsp`).
+basicConstraints = CA:FALSE
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, digitalSignature
+extendedKeyUsage = critical, OCSPSigning
